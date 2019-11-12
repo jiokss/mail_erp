@@ -1,0 +1,22 @@
+{
+	"code": 1000,
+	"result": {
+		"data": [{
+			"FileName": "微信图片_201909240850241.jpg",
+			"FilePath": "http://121.32.130.178:8897/FileUpload/6/a477dcb7-cb5b-4755-b77d-be562366c598.jpg",
+			"Guid": "a477dcb7-cb5b-4755-b77d-be562366c598"
+		}, {
+			"FileName": "微信图片_20190924085024.jpg",
+			"FilePath": "http://121.32.130.178:8897/FileUpload/6/4d664bad-9cd8-4d69-bf9d-b82dccc4d656.jpg",
+			"Guid": "4d664bad-9cd8-4d69-bf9d-b82dccc4d656"
+		}, {
+			"FileName": "微信图片_201909240850242.jpg",
+			"FilePath": "http://121.32.130.178:8897/FileUpload/6/6c582b83-a6de-46ce-b252-cecf16879afe.jpg",
+			"Guid": "6c582b83-a6de-46ce-b252-cecf16879afe"
+		}, {
+			"FileName": "微信图片_201909240850243.jpg",
+			"FilePath": "http://121.32.130.178:8897/FileUpload/6/f8ea2625-164a-483a-ac40-4ba2f23d8f37.jpg",
+			"Guid": "f8ea2625-164a-483a-ac40-4ba2f23d8f37"
+		}]
+	}
+}

@@ -1,0 +1,27 @@
+{
+	"code": 1000,
+	"result": {
+		"grpList": [{
+			"bar_serial_num": null,
+			"grp_name": "核基因高精度定点项目",
+			"grp_id": "228",
+			"spec_name": "",
+			"grp_price": "900",
+			"grp_custom_price": "900.00",
+			"grp_index_num": "1",
+			"grp_custom_num": "0",
+			"paymen_price": null,
+			"spec_id": "",
+			"bar_spectype_id": "1",
+			"bar_con_num": "1",
+			"PrimaryKey": null,
+			"pat_file": null,
+			"pat_file_path": null,
+			"req_born_flag": "1",
+			"org_id": "0",
+			"req_org_dept": "0",
+			"pat_family_relation": "0",
+			"bar_sampling_time": "2019-09-18 09:42"
+		}]
+	}
+}

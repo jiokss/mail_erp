@@ -1,0 +1,43 @@
+[{
+	"LogDes": "修改",
+	"log_item": "",
+	"log_key": 0,
+	"log_req_code": "10041834",
+	"log_bar_sn": null,
+	"log_sam_id": null,
+	"log_pat_id": null,
+	"log_operation": null,
+	"log_date": "2019-09-25 15:15",
+	"log_user_id": null,
+	"log_user_name": "",
+	"log_remark": "内容变动:\r\n临床资料: 智力低下，癫痫发作史，有家族史（男方叔父患病） -> 女儿智力低下，癫痫发作史，有家族史 ; ",
+	"log_location": null
+}, {
+	"LogDes": "修改",
+	"log_item": "",
+	"log_key": 0,
+	"log_req_code": "10041834",
+	"log_bar_sn": null,
+	"log_sam_id": null,
+	"log_pat_id": null,
+	"log_operation": null,
+	"log_date": "2019-09-25 15:14",
+	"log_user_id": null,
+	"log_user_name": "",
+	"log_remark": "内容变动:\r\n患者姓名: 薛涵尹父 -> 薛进 ; 年龄: 未知 -> NULL ; 寄送用户: NULL -> 陈科羽 ; 寄送电话: NULL -> 13996765250 ; 寄送地址: NULL -> 重庆市涪陵区大塘路口华福郡7栋3-9 ; 寄送公司: NULL ->  ; 发票地址: NULL ->  ; 寄送邮件: NULL ->  ; 接收用户: NULL ->  ; 接收电话: NULL ->  ; 接收地址: NULL ->  ; 接收物流: NULL ->  ; 接收公司: NULL ->  ; 接收email: NULL ->  ; 年龄描述: 11岁 -> 30岁 ; 备注:  -> 大伯、三叔、四叔、姑姑患癫痫史，大伯、四叔健在，三叔、姑姑已去世；sgww10+岁患有乙肝。 ; ",
+	"log_location": null
+}, {
+	"LogDes": "新增",
+	"log_item": "",
+	"log_key": 0,
+	"log_req_code": "10041834",
+	"log_bar_sn": null,
+	"log_sam_id": null,
+	"log_pat_id": null,
+	"log_operation": null,
+	"log_date": "2019-09-25 15:12",
+	"log_user_id": null,
+	"log_user_name": "",
+	"log_remark": "",
+	"log_location": null
+}]

@@ -108,7 +108,7 @@
             prop="address"
             label="操作"
             fixed="right"
-            min-width="250px"
+            :width="btnList==''?'':'250px'"
             show-overflow-tooltip>
             <template slot-scope="scope">
                 <span v-for="(item,index) in btnList" :key="index" class="btnList" v-if="item.op_title!='导出'">
@@ -469,7 +469,7 @@ export default {
            _this.btnList = data.data
            console.log(res)
          }).catch(err=>{
-           this.$message({ message: '获取表头信息出错，请重新加载！', type: 'warning' });
+           this.$message({ message: '获取按钮信息出错，请重新加载！', type: 'warning' });
            console.log(err)
          })
      },

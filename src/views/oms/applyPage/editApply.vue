@@ -687,6 +687,9 @@ export default {
         var _this = this
         var fileData = this.$refs.upLoadChild.uploadFileId
         var type = 1
+        var repTable = this.projectForm.repTable
+        var siteData = this.siteData
+
         if(this.mechanismForm.req_org_id==''){
           this.$message({ message: '请先选择开单机构!', type: 'warning' });
           return false
@@ -729,6 +732,11 @@ export default {
               type = 2
               return false
             }
+            if(!item.bar_serial_num.match(/^0\d{7}$/)){
+              this.$message({ message: '请输入正确的条码!', type: 'warning' });
+              type = 2
+              return false
+            }
             if(item.paymen_price=='' || item.paymen_price==null){
               this.$message({ message: '请填写实收价格!', type: 'warning' });
               type = 2
@@ -747,7 +755,18 @@ export default {
           })
         }
 
-        //交付信息校验
+        // 添加项目验证
+        console.log(this.projectForm.repTable)
+        console.log(_this.siteData)
+        for(var i=0;i<repTable.length;i++){
+          if(repTable[i].grp_id =="228"||repTable[i].grp_id=="229"||repTable[i].grp_id=="1994"){
+            if(siteData.length<1){
+              this.$message({ message: '这是特殊项目，需要点击最上面“位点录入”按钮新增位点信息，开单才能成功', type: 'warning' });
+              return false
+            }
+          }
+        }
+                //交付信息校验
         this.deliverForm.report.forEach(item=>{
           if(item.LmUser=='' || item.LmUser==null){
             this.$message({ message: '请填写收件人姓名!', type: 'warning' });
@@ -768,110 +787,56 @@ export default {
         if(type == 2){
           return false
         }
-
-
-        if(code){
-          var proData = qs.stringify({
-            req_code: code,
-            pat_tag: (_this.status=='0'?'':_this.bar_sn),
-            req_org_id: _this.mechanismForm.req_org_id,
-            req_org_dept: _this.mechanismForm.req_org_dept,
-            req_doc_name: _this.mechanismForm.req_doc_name,
-            req_doc_phone: _this.mechanismForm.req_doc_phone,
-            req_dest_labid: _this.mechanismForm.req_dest_labid,
-            pat_name: _this.patientForm.pat_name,
-            pat_sex: _this.patientForm.pat_sex,
-            pat_age_dec: _this.patientForm.pat_age_dec,
-            pat_birthday: _this.patientForm.pat_birthday,
-            pat_IDcard: _this.patientForm.pat_IDcard,
-            pat_phone: _this.patientForm.pat_phone,
-            req_pat_id: _this.patientForm.req_pat_id,
-            pat_familyno: _this.patientForm.pat_familyno,
-            pat_family_relation: _this.status,
-            req_mr_num: _this.patientForm.req_mr_num,
-            pat_address: _this.patientForm.pat_address,
-            req_diag_info: _this.patientForm.req_diag_info,
-            req_remark: _this.patientForm.req_remark,
-            req_save: _this.projectForm.req_save,
-            req_born_flag: _this.projectForm.req_born_flag,
-            req_type: _this.projectForm.req_type,
-            itemName: _this.projectForm.itemName,
-            LmUserSend: '',
-            LmPhoneSend: '',
-            LmAddressSend: '',
-            LmInvoiceSend: '',
-            LmEmailSend: '',
-            LmNumberSend: '',
-            LmCompanySend: '',
-            req_note: _this.req_note,
-            LmUserReceive: _this.deliverForm.sample.LmUserReceive,
-            LmPhoneReceive: _this.deliverForm.sample.LmPhoneReceive,
-            LmAddressReceive: _this.deliverForm.sample.LmAddressReceive,
-            LmNumberReceive: _this.deliverForm.sample.LmNumberReceive,
-            LmCompanyReceive: _this.deliverForm.sample.LmCompanyReceive,
-            req_payment_way: payData.req_payment_way,
-            req_payment_flag: payData.req_payment_flag,
-            req_disconut_price:payData.req_disconut_price,
-            req_payment_price: payData.req_payment_price,
-            ContractNo: payData.ContractNo,
-            clientPay:payData.clientPayNo,
-            req_payment_remark: payData.req_payment_remark,
-            itemResult: JSON.stringify(_this.projectForm.repTable),
-            req_file_id: fileData.join(','),
-            position:_this.siteData==''?'': JSON.stringify(_this.siteData),
-            LmSendList: JSON.stringify(_this.deliverForm.report),
-          })
-        }else{
-          var proData = qs.stringify({
-            pat_tag: (_this.status=='0'?'':_this.bar_sn),
-            req_org_id: _this.mechanismForm.req_org_id,
-            req_org_dept: _this.mechanismForm.req_org_dept,
-            req_doc_name: _this.mechanismForm.req_doc_name,
-            req_doc_phone: _this.mechanismForm.req_doc_phone,
-            req_dest_labid: _this.mechanismForm.req_dest_labid,
-            pat_name: _this.patientForm.pat_name,
-            pat_sex: _this.patientForm.pat_sex,
-            pat_age_dec: _this.patientForm.pat_age_dec,
-            pat_birthday: _this.patientForm.pat_birthday,
-            pat_IDcard: _this.patientForm.pat_IDcard,
-            pat_phone: _this.patientForm.pat_phone,
-            req_pat_id: _this.patientForm.req_pat_id,
-            pat_familyno: _this.patientForm.pat_familyno,
-            pat_family_relation: _this.status,
-            req_mr_num: _this.patientForm.req_mr_num,
-            pat_address: _this.patientForm.pat_address,
-            req_diag_info: _this.patientForm.req_diag_info,
-            req_remark: _this.patientForm.req_remark,
-            req_save: _this.projectForm.req_save,
-            req_born_flag: _this.projectForm.req_born_flag,
-            req_type: _this.projectForm.req_type,
-            itemName: _this.projectForm.itemName,
-            LmUserSend: '',
-            LmPhoneSend: '',
-            LmAddressSend: '',
-            LmInvoiceSend: '',
-            LmEmailSend: '',
-            LmNumberSend: '',
-            LmCompanySend: '',
-            req_note: _this.req_note,
-            LmUserReceive: _this.deliverForm.sample.LmUserReceive,
-            LmPhoneReceive: _this.deliverForm.sample.LmPhoneReceive,
-            LmAddressReceive: _this.deliverForm.sample.LmAddressReceive,
-            LmNumberReceive: _this.deliverForm.sample.LmNumberReceive,
-            LmCompanyReceive: _this.deliverForm.sample.LmCompanyReceive,
-            req_payment_way: (_this.cashier==''?'':_this.cashier.req_payment_way),
-            req_payment_flag: (_this.cashier==''?'':_this.cashier.req_payment_flag),
-            req_disconut_price:(_this.cashier==''?'':_this.payData.req_price),
-            req_payment_price: (_this.cashier==''?'':_this.cashier.req_payment_price),
-            ContractNo: (_this.cashier==''?'':_this.cashier.ContractNo),
-            clientPay: (_this.cashier==''?'':_this.cashier.clientPayNo),
-            req_payment_remark: (_this.cashier==''?'':_this.cashier.req_payment_remark),
-            itemResult: JSON.stringify(_this.projectForm.repTable),
-            req_file_id: fileData.join(','),
-            position:_this.siteData==''?'': JSON.stringify(_this.siteData),
-            LmSendList: JSON.stringify(_this.deliverForm.report),
-          })
-        }
+        var proData = qs.stringify({
+          req_code: code?code:undefined,
+          pat_tag: (_this.status=='0'?'':_this.bar_sn),
+          req_org_id: _this.mechanismForm.req_org_id,
+          req_org_dept: _this.mechanismForm.req_org_dept,
+          req_doc_name: _this.mechanismForm.req_doc_name,
+          req_doc_phone: _this.mechanismForm.req_doc_phone,
+          req_dest_labid: _this.mechanismForm.req_dest_labid,
+          pat_name: _this.patientForm.pat_name,
+          pat_sex: _this.patientForm.pat_sex,
+          pat_age_dec: _this.patientForm.pat_age_dec,
+          pat_birthday: _this.patientForm.pat_birthday,
+          pat_IDcard: _this.patientForm.pat_IDcard,
+          pat_phone: _this.patientForm.pat_phone,
+          req_pat_id: _this.patientForm.req_pat_id,
+          pat_familyno: _this.patientForm.pat_familyno,
+          pat_family_relation: _this.status,
+          req_mr_num: _this.patientForm.req_mr_num,
+          pat_address: _this.patientForm.pat_address,
+          req_diag_info: _this.patientForm.req_diag_info,
+          req_remark: _this.patientForm.req_remark,
+          req_save: _this.projectForm.req_save,
+          req_born_flag: _this.projectForm.req_born_flag,
+          req_type: _this.projectForm.req_type,
+          itemName: _this.projectForm.itemName,
+          LmUserSend: '',
+          LmPhoneSend: '',
+          LmAddressSend: '',
+          LmInvoiceSend: '',
+          LmEmailSend: '',
+          LmNumberSend: '',
+          LmCompanySend: '',
+          req_note: _this.req_note,
+          LmUserReceive: _this.deliverForm.sample.LmUserReceive,
+          LmPhoneReceive: _this.deliverForm.sample.LmPhoneReceive,
+          LmAddressReceive: _this.deliverForm.sample.LmAddressReceive,
+          LmNumberReceive: _this.deliverForm.sample.LmNumberReceive,
+          LmCompanyReceive: _this.deliverForm.sample.LmCompanyReceive,
+          req_payment_way: (_this.cashier==''?'':_this.cashier.req_payment_way),
+          req_payment_flag: (_this.cashier==''?'':_this.cashier.req_payment_flag),
+          req_disconut_price:(_this.cashier==''?'':_this.payData.req_price),
+          req_payment_price: (_this.cashier==''?'':_this.cashier.req_payment_price),
+          ContractNo: (_this.cashier==''?'':_this.cashier.ContractNo),
+          clientPay: (_this.cashier==''?'':_this.cashier.clientPayNo),
+          req_payment_remark: (_this.cashier==''?'':_this.cashier.req_payment_remark),
+          itemResult: JSON.stringify(_this.projectForm.repTable),
+          req_file_id: fileData.join(','),
+          position:_this.siteData==''?'': JSON.stringify(_this.siteData),
+          LmSendList: JSON.stringify(_this.deliverForm.report),
+        })
         this.loading = true
         this.$axios.post(this.$path.formcomplete,proData)
         .then(res=>{
@@ -888,6 +853,7 @@ export default {
                 _this.$nextTick(()=>{
                   _this.$parent.activeName2 = 'first'
                   $("#tab-first").trigger("click")
+                  _this.$parent.$parent.$parent.$parent.getform()
                 })
 
                 //this.$parent.dialogVisible = false

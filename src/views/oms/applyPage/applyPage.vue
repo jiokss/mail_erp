@@ -95,6 +95,13 @@
           </el-table-column>
 
           <el-table-column
+          label="备注"
+          prop="req_remark"
+          width="280px"
+          >
+             <!-- :fixed="index==0||index==1?true:false" -->
+          </el-table-column>
+          <el-table-column
             prop="address"
             label="操作"
             fixed="right"

@@ -494,7 +494,7 @@ export default {
    },
    methods:{
      //加载详情数据
-     initView(){
+     initView(type){
        var _this = this
        this.$axios.get(this.$path.getformCode1+'?req_code='+this.req_code)
        .then(res=>{
@@ -504,36 +504,43 @@ export default {
            this.$message({ message: data.result.msg, type: 'warning' });
            return false
          }
-         var data = eval(res.data)
-         let itemResult = data.result.itemResult
-         let bar_id = itemResult[0].bar_sn
-         _this.reqList = data.result.reqList[0]
-         _this.guid = data.result.reqList[0].req_file_id
-         _this.itemResult = data.result.itemResult
-         _this.editChir.XiangMuShu = itemResult.length
-         _this.editChir.sampleNum = itemResult.length
-         var sumPrice = 0;
-         itemResult.forEach((item,index)=>{
-            // _this.payData.grp_price += parseFloat(item.grp_price)
-            sumPrice +=(item.grp_price*item.grp_index_num)+(item.grp_custom_price*item.grp_custom_num)
-         })
-         _this.editChir.ZongJiaGe = sumPrice
-         if(JSON.parse(data.result.reqList[0].LmSendList)!='')  _this.LmSendList = JSON.parse(data.result.reqList[0].LmSendList)
-         _this.req_note = JSON.stringify(data.result.reqList[0].req_note)
-         _this.deliverForm.LmUserReceive = data.result.reqList[0].LmUserReceive
-         _this.deliverForm.LmPhoneReceive = data.result.reqList[0].LmPhoneReceive
-         _this.deliverForm.LmAddressReceive = data.result.reqList[0].LmAddressReceive
-         _this.deliverForm.LmNumberReceive = data.result.reqList[0].LmNumberReceive
-         _this.deliverForm.LmCompanyReceive = data.result.reqList[0].LmCompanyReceive
-         _this.siteData = JSON.parse(data.result[bar_id][0].position)
-         if(_this.guid=='' || _this.guid==null){
-            console.log('获取文件ID为空')
-            this.$refs.upLoadChild.initFile()
-          }else{
-            console.log('获取文件ID')
-            this.$refs.upLoadChild.GetFileByGuid(_this.guid)
+         this.$nextTick(()=>{
+          var data = eval(res.data)
+          let itemResult = data.result.itemResult
+          let bar_id = (itemResult==''?'':itemResult[0].bar_sn)
+          _this.reqList = data.result.reqList[0]
+          console.log(_this.reqList)
+          _this.guid = data.result.reqList[0].req_file_id
+          _this.itemResult = data.result.itemResult
+          _this.editChir.XiangMuShu = itemResult.length
+          _this.editChir.sampleNum = itemResult.length
+          var sumPrice = 0;
+          itemResult.forEach((item,index)=>{
+              // _this.payData.grp_price += parseFloat(item.grp_price)
+              sumPrice +=(item.grp_price*item.grp_index_num)+(item.grp_custom_price*item.grp_custom_num)
+          })
+          _this.editChir.ZongJiaGe = sumPrice
+          if(JSON.parse(data.result.reqList[0].LmSendList)!='')  _this.LmSendList = JSON.parse(data.result.reqList[0].LmSendList)
+          _this.req_note = JSON.stringify(data.result.reqList[0].req_note)
+          _this.deliverForm.LmUserReceive = data.result.reqList[0].LmUserReceive
+          _this.deliverForm.LmPhoneReceive = data.result.reqList[0].LmPhoneReceive
+          _this.deliverForm.LmAddressReceive = data.result.reqList[0].LmAddressReceive
+          _this.deliverForm.LmNumberReceive = data.result.reqList[0].LmNumberReceive
+          _this.deliverForm.LmCompanyReceive = data.result.reqList[0].LmCompanyReceive
+          if(data.result[bar_id]){
+            _this.siteData = JSON.parse(data.result[bar_id][0].position)
+            _this.reqList.ReceiveTime = data.result[bar_id][0].ReceiveTime
+            _this.reqList.SignTime = data.result[bar_id][0].SignTime
+            _this.reqList.RepData = data.result[bar_id][0].RepData
           }
-
+          if(_this.guid=='' || _this.guid==null){
+              console.log('获取文件ID为空')
+              this.$refs.upLoadChild.initFile()
+            }else{
+              console.log('获取文件ID')
+              this.$refs.upLoadChild.GetFileByGuid(_this.guid)
+            }
+          })
        })
        .catch(err=>{
          console.log(err)

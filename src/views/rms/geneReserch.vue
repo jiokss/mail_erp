@@ -174,7 +174,7 @@ export default {
      getform(searchField){
       var _this = this
       var obj = encodeURI(JSON.stringify(this.listQuery))
-      var url = 'http://192.168.1.43:2223/reports/GMSearcher/SearchByName?offset='+this.pagination.currentPage+'&search='+(this.searchTable==''?undefined:this.searchTable)+'&limit='+this.pagination.pageSize+'&order=asc&geneName='+this.listQuery.txtGeneName+'&diseaseName='+this.listQuery.txtDiseaseName+'&geneGroupName='+this.listQuery.txtGeneGroupName
+      var url = 'http://192.168.1.43:2223/reports/GMSearcher/SearchByName?offset='+this.pagination.currentPage+(this.searchTable==''?'':'&search='+this.searchTable)+'&limit='+this.pagination.pageSize+'&order=asc&geneName='+this.listQuery.txtGeneName+'&diseaseName='+this.listQuery.txtDiseaseName+'&geneGroupName='+this.listQuery.txtGeneGroupName
       // var url = this.$path.SearchByName+'?offset=0&limit=10&order=asc&geneName=&diseaseName=&geneGroupName='
       this.$axios.get(url)
       .then(res=>{

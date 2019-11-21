@@ -231,6 +231,7 @@ export default {
        }else{
           this.menuCodeList = 'sales_application_report'
        }
+       this.pagination.currentPage = 1
       this.loading = true
       this.GetMenuFieldList()
       this.getform();
@@ -315,7 +316,7 @@ export default {
           }
         })
         .catch(err=>{
-          this.$message({ message: '获取表头信息出错，请重试！', type: 'warning' });
+          this.$message({ message: '获取按钮信息出错，请重试！', type: 'warning' });
         })
      },
      //获取表格信息
@@ -337,7 +338,7 @@ export default {
       }
       console.log(path)
       // this.$axios.get(this.$path.get,{
-      this.$axios.get(this.$path.approvalGet+path,{
+      this.$axios.post(this.$path.approvalGet+path,{
         pageIndex:this.pagination.currentPage,
         pageSize:this.pagination.pageSize,
         sortOrder:"desc",

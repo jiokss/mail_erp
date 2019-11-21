@@ -393,7 +393,7 @@ export default {
      this.GetMenuFieldList()
      this.getform()
      this.GetMedicalTotal()
-     this.EditNotice(1)
+    //  this.EditNotice(1)
      this.EditNotice()
 
    },
@@ -773,6 +773,7 @@ export default {
 
      //消息中心
      EditNotice(type){
+       var href2 = this.$path.EditNotice+'?type=25&posttype=1&searchField={"isRead":"0"}'
        if(type){
          var href = this.$path.EditNotice+'?type=25&posttype=1&searchField={"isRead":"0"}'
        }else{
@@ -787,8 +788,20 @@ export default {
        .then(res=>{
          this.EditNoticeTable = res.data.rows
          this.pagination2.total = res.data.total
-         if(type) this.msgNum = res.data.total
-         console.log(res.data.rows)
+          if(!type){
+             this.$axios.post(href2,{
+                orderField: "CreateDate",
+                pageIndex: 1,
+                pageSize: 10,
+                sortOrder: "asc",
+             })
+             .then(res=>{
+                this.msgNum = res.data.total
+             })
+             .catch(err=>{
+
+             })
+          }
        })
        .catch(err=>{
 

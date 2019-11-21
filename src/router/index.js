@@ -97,6 +97,26 @@ export const constantRouterMap = [
     path: '/oms',
     component: Layout,
     children: [{
+      path: 'applyInquiryDel',
+      name: 'applyInquiryDel',
+      component: () => import('@/views/oms/applyPage/applyInquiryDel'),
+      meta: {title: '废弃申请单', icon: 'product-list'}
+    }]
+  },
+  {
+    path: '/oms',
+    component: Layout,
+    children: [{
+      path: 'applyInquiryCw',
+      name: 'applyInquiryCw',
+      component: () => import('@/views/oms/applyPage/applyInquiryCw'),
+      meta: {title: '已退样的协议样本', icon: 'product-list'}
+    }]
+  },
+  {
+    path: '/oms',
+    component: Layout,
+    children: [{
       path: 'phoneApply',
       name: 'phoneApply',
       component: () => import('@/views/oms/phoneApply/editApply'),
@@ -129,6 +149,16 @@ export const constantRouterMap = [
 
 
   // rms 系统导航
+  {
+    path: '/rms',
+    component: Layout,
+    children: [{
+      path: 'medical_task_manage',
+      name: 'medical_task_manage',
+      component: () => import('@/views/rms/medical_task_manage'),
+      meta: {title: '任务管理', icon: 'product-list'}
+    }]
+  },
   {
     path: '/rms',
     component: Layout,
@@ -209,7 +239,17 @@ export const constantRouterMap = [
       meta: {title: '案例统计', icon: 'product-list'}
     }]
   },
-  
+  // {
+  //   path: '/rms',
+  //   component: Layout,
+  //   children: [{
+  //     path: 'report_special_serach',
+  //     name: 'report_special_serach',
+  //     component: () => import('@/views/rms/report_special_serach'),
+  //     meta: {title: '退样物流', icon: 'product-list'}
+  //   }]
+  // },
+
   {path: '*', redirect: '/404', hidden: true}
 ]
 

@@ -27,6 +27,9 @@ export default {
      if(this.guid=='0'){
        this.initFile()
      }
+     if(this.guid=='99'){
+       this.autoLoad()
+     }
    },
    methods:{
      //文件上传组件初始化
@@ -70,6 +73,38 @@ export default {
                 console.log(_this.uploadFileId)
             });
         })
+     },
+     //自动上传初始化
+     autoLoad(){
+      var _this = this
+      var barCode = this.barCode
+      console.log(this)
+      $("#file").fileinput({
+          language: 'zh',
+          uploadUrl: 'http://121.32.130.178:8896/api/FileService/Upload',
+          browseClass: "btn btn-primary",
+          browseLabel: '上传',
+          showCaption: true,
+          showRemove: true,
+          showUpload: true,
+          showCancel: true,
+          enctype: 'multipart/form-data',
+          uploadExtraData: function () {
+          return { 'relativePath': '/10/'+barCode+'/8_QualityControl'};
+      }
+      }).on("filebatchselected", function (event, files) {// 选择文件后自动上传
+          $(this).fileinput("upload");
+      }).on("fileuploaded", function (event, data, previewId, index) {// 异步上传成功
+          if (data.response.Status){
+            _this.$message({ message: data.response.Message, type: 'success'  });
+          }else{
+            _this.$message({ message: data.response.Message, type: 'success'  });
+          }
+      }).on("filebatchuploaderror", function (event, data, msg) {// 同步上传失败
+          _this.$message({ message: data.response.Message, type: 'error'  });
+      }).on("fileerror", function (event, data, msg) {// 异步上传失败
+          _this.$message({ message: data.response.Message, type: 'error'  });
+      });
      },
 
      //回显上传数据
@@ -162,7 +197,7 @@ export default {
         console.log(this)
       },
    },
-   props: ['guid'],
+   props: ['guid','barCode'],
    watch:{
       guid(newVal,oldVal){
         console.log(newVal)

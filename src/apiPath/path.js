@@ -19,9 +19,10 @@ let path = {
   CheckPosition:api + 'mgene/newform/CheckPosition',  //获取表格位点
   submitfamily:api + 'mgene/newform/submitfamily',  //家系信息提交
   formcomplete:api + 'mgene/newform/formcomplete',   //提交申请单
-  GetMenuFieldList:api + 'api/webapi/GetMenuFieldList?menuCodeList=erp_medical_apply_inquiry&returnType=formatted',  //获取表格表头
+  GetMenuFieldList:api + 'api/webapi/GetMenuFieldList?menuCodeList=erp_sales_apply_manage&returnType=formatted',  //获取表格表头
   getform:api + 'mgene/newform/getform?posttype=1',   //申请单管理查询表格数据
   getform1:api + 'mgene/newform/getform',   //申请单管理查询表格数据
+  getformcw:api + 'mgene/newform/getformcw',   //申请单管理查询表格数据
   approvalGet:api + 'mgene/approval/get',   //申请单管理查询表格数据
   getErpUserOperation1:api + 'api/webapi/getErpUserOperation',   //申请单管理表头按钮
   getformCode1:api + 'mgene/newform/getform',     //编辑回显数据
@@ -71,8 +72,9 @@ let path = {
   ImportMitoTrainData:'http://192.168.1.44:8899/api/MitoModelAnalysis/ImportMitoTrainData',   //人工锁定导入
   ExportMitoTrainData:'http://192.168.1.44:8899/api/MitoModelAnalysis/ExportMitoTrainData',   //人工锁定导出
   GetReportDetail:api + 'mgene/report/GetReportDetail',    //案例统计信息
-
-
+  UpdateFlag:api + 'mgene/taskmedical/UpdateFlag',  //任务发起信息查询
+  EditTaskRule:api + 'mgene/taskmedical/EditTaskRule',  //任务发起信息查询
+  EditDicGroupPer:api + 'mgene/itemorg/EditDicGroupPer',  //任务发起信息查询
 
 }
 

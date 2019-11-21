@@ -21,6 +21,7 @@ import Path from './apiPath/path'			//导入请求地址
 import Axios from 'axios'		
 import echarts from 'echarts'
 import directive from 'element-ui/packages/popover/src/directive';
+
 Vue.directive('popover', directive);
 Vue.prototype.$axios = Axios
 Vue.prototype.$path = Path

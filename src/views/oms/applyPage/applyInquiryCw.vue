@@ -1,6 +1,6 @@
 <template>
-    <!-- 迟发通知 -->
-    <div class="queryMain app-container">
+<!-- 物流打印 -->
+    <div class="queryMain app-container logistics">
       <el-card class="filter-container" shadow="never">
         <div>
           <i class="el-icon-search"></i>
@@ -47,9 +47,11 @@
       </el-card>
       <el-card class="filter-container" shadow="never" style="margin-top:15px;">
         <div style="margin-bottom:25px;">
+          <input id="file" type="file" style="display:none">
+          <el-button type="primary" @click="view()">详 情</el-button>
           <el-button @click="exportData">导 出</el-button>
           <div :inline="true" class="demo-form-inline float_right">
-            <el-input style="width:auto;" placeholder="搜索" v-model="searchTable"  @keyup.enter.native="searchFrom()"></el-input>
+            <el-input style="width:auto;" placeholder="搜索" v-model="searchTable"  @keyup.enter.native="searchFrom"></el-input>
             <el-button v-popover:popover2><i class="el-icon-menu"></i></el-button>
             <el-popover
               ref="popover2"
@@ -68,6 +70,7 @@
           stripe
           tooltip-effect="dark"
           style="width: 100%"
+          :row-class-name="tableRowClassName"
           @row-click = "selectRowChange"
           >
           <el-table-column
@@ -80,30 +83,34 @@
             v-for="(item,index) in menuList" :key="index"
             :label="item.name"
             :prop="item.id"
-            min-width="150px"
-            :width="item.name=='临床症状' || item.name=='项目' || item.name=='备注'?'400':'auto'"
-            align="center"
-            header-align="center"
-            :fixed="index<3"
             v-if="checkedCities.indexOf(item.name) != -1"
+            :width="item.name=='寄送地址'?'300':'140'"
+            :fixed="index<3?true:false"
             >
             <template slot-scope="scope">
-              <span v-if="scope.row[item.id] == null"> - </span>
-              <span v-else>{{ scope.row[item.id] }} </span>
+              <span v-if="item.id=='resultStr'">
+                <span style="color:red" v-if="scope.row[item.id] == '未完成'">未完成</span>
+                <span style="color:#59ff7a" v-if="scope.row[item.id] == '已完成'">已完成</span>
+              </span>
+              <el-input size="mini" v-else-if="item.id=='rep_num'&&scope.row['resultStr'] == '未完成'" v-model="scope.row.rep_num" placeholder="请输入内容"></el-input>
+              <el-input size="mini" v-else-if="item.id=='rep_InvoiceCode'&&scope.row['resultStr'] == '未完成'" v-model="scope.row.rep_InvoiceCode" placeholder="请输入内容"></el-input>
+              <el-input size="mini" v-else-if="item.id=='rep_InvoicePrice'&&scope.row['resultStr'] == '未完成'" v-model="scope.row.rep_InvoicePrice" placeholder="请输入内容"></el-input>
+              <el-input size="mini" v-else-if="item.id=='rep_InvoiceRemark'&&scope.row['resultStr'] == '未完成'" v-model="scope.row.rep_InvoiceRemark" placeholder="请输入内容"></el-input>
+              <span v-else>{{ scope.row[item.id] }}</span>
             </template>
+
           </el-table-column>
+
           <el-table-column
             prop="address"
             label="操作"
             fixed="right"
-            width="105px"
-            v-if="menuCodeList=='erp_medical_report_delay'"
+            min-width="80px"
             show-overflow-tooltip>
             <template slot-scope="scope">
-              <el-button v-if="item.op_title != '导出' " v-for="(item,index) in headerBtnList" :key="index" @click="navBtnList(item.op_title,scope.row)" size="small">{{item.op_title}}</el-button>
+              <el-button @click="view(scope.row)" size="small">详情</el-button>
             </template>
           </el-table-column>
-
         </el-table>
         <div class="" style="margin-top:15px;">
           <el-pagination
@@ -117,33 +124,54 @@
           </el-pagination>
         </div>
       </el-card>
-
-
+      <!-- 详情弹窗 -->
+      <el-dialog
+        title="详情"
+        :visible.sync="dialogVisible"
+        width="80%"
+        top="3vh"
+        >
+        <el-tabs v-model="activeName2" type="card" v-if="dialogVisible" @tab-click="handleClick(activeName2)">
+          <el-tab-pane label="详 情" name="first" v-if="activeName2=='first'">
+            <ViewApply :req_code="req_code"></ViewApply>
+          </el-tab-pane>
+        </el-tabs>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="submitModify" v-if="activeName2=='second'">确 定</el-button>
+        </span>
+      </el-dialog>
+      <!-- 详情弹窗 end-->
     </div>
 </template>
 <script>
-//import { medical_dis_report,GetMenuFieldList_report,GetMenuOperationList_report } from '../../../static/data/mockData'
 import qs from 'qs'
+import ViewApply from './viewApply'
 export default {
    data() {
       return {
         searchTable:'',
-        showHideSeach:false,
         dialogVisible:false,
-        dialogVisible2:false,
-        req_remark:'',  //新增申請备注
+        activeName2:'first',
         guid:'0',
-        date:'',
-        date2:'',
-        OutField:{},
-        listQuery:{},
-        searchSelect:[],  //搜索下拉列表
-        searchText:[],    //搜索文本
-        searchDate:[],    //搜索时间
-        sample:{
-          title:[],
-          context:'',
-          remark:'',
+        listQuery:{
+          resultStr:'',
+          repStatusStr:'',
+          rep_id:'',
+          pat_name:'',
+          bar_code:'',
+          rep_user:'',
+          rep_phone:'',
+          rep_address:'',
+
+          rep_create_username:'',
+          rep_num:'',
+          rep_InvoiceCode:'',
+          rep_InvoicePrice:'',
+          rep_InvoiceRemark:'',
+          rep_time:'',
+          rep_finishtime:'',
+
         },
         pagination:{
           pageSize:10,    //每页显示条数
@@ -151,6 +179,7 @@ export default {
           currentPage:1,    //当前页数
         },
         menuList:[],
+        OutField:{},
         headerBtnList:[],
         options: [],  //状态筛选列表
         value6: '',
@@ -159,8 +188,14 @@ export default {
         guid:'0',
         ReqCode:'',
         checkedCities:[],
-        menuCodeList:'report_special_search',
+        menuCodeList:'erp_medical_apply_inquiry',
         formatted:'formatted',
+        OutField:[],
+        searchSelect:[],
+        searchText:[],
+        searchDate:[],
+        showHideSeach:false,
+        req_code:'',
       }
    },
    activated() {
@@ -169,45 +204,37 @@ export default {
      this.GetMenuFieldList()
      this.getform()
    },
+   mounted(){
+    var _this = this
+    var dataId = ''
+   },
    methods:{
      //确定时间周期
      dateTime(value){
-       this.listQuery.CreatedDate = value[0]+'<'+value[1]
-       console.log(this.listQuery.req_date)
-     },
-     //确定时间周期
-     dateTime2(value){
-       this.listQuery.RevisedDate = value[0]+'<'+value[1]
+       this.listQuery.req_date = value[0]+'<'+value[1]
        console.log(this.listQuery.req_date)
      },
      //查询搜索按钮
      search(){
        this.searchTable = ''
-        var obj =  this.listQuery
-        for(let key in obj){
-          if(Array.isArray(obj[key])){
-            obj[key] = '>'+obj[key][0]+'<'+obj[key][1]
-          }
-        }
-        this.listQuery = obj
-        this.pagination.currentPage = 1
-        this.pagination.pageSize = 10
-        this.getform(1)
+       let searchField = '?posttype=1&searchField='+JSON.stringify(this.listQuery)
+       this.pagination.currentPage = 1
+       this.pagination.pageSize = 10
+       this.getform(searchField)
      },
      //获取表格头部列表
      GetMenuFieldList(){
       var _this = this
       this.$axios.get(this.$path.sales_GetMenuFieldList+"?menuCodeList="+this.menuCodeList+"&returnType="+this.formatted)
       .then(res=>{
-           _this.menuList = res.data.data
-//      let datas = GetMenuFieldList_report()
-//      console.log(datas)
-//      _this.menuList = datas.data
-        _this.menuList.forEach((item,index) => {
+        console.log(res)
+        _this.menuList = res.data.data
+        res.data.data.forEach((item,index) => {
           _this.checkedCities.push(item.name)
           if(item.id=="RequestStatus"){
             _this.options = item.data
           }
+        });
           var outArray = {}
           var outArray2 = {}
           var searchSelect = [];
@@ -238,41 +265,39 @@ export default {
         _this.searchSelect = searchSelect
         _this.searchText = searchText
         _this.searchDate = searchDate
-        });
       })
       .catch(err=>{
-       //conosle.log(err)
+       this.$message({ message: '获取表头信息出错，请重试！', type: 'warning' });
       })
      },
      //获取表格信息
-     getform(type){
+     getform(data = '?posttype=1'){
       var _this = this
+      var pathData = data
       var obj = encodeURI(JSON.stringify(this.listQuery))
-      var url = this.$path.GetMitoMutationTrainData
-      // var url = this.$path.GetReportDetail+'?type=25&posttype=1'
-      if(type) url += '&searchField=' + obj
-      // this.$axios.get(this.$path.get,{
-      // let url = 'http://dna.gz.cn/mgene//sample/Getsample?type=3&posttype=1'
-      this.$axios.post(url,{
+      this.$axios.post(this.$path.getformcw+pathData,{
+      // this.$axios.post(this.$path.getform+'?posttype=1&searchField='+obj,{
         pageIndex:this.pagination.currentPage,
         pageSize:this.pagination.pageSize,
         sortOrder:"desc",
         sortvalue:this.searchTable==''?undefined:this.searchTable,
       })
       .then(res=>{
-        var data = eval(res.data)
-        data = data.Data
-        console.log(data.rows)
-        if(data.code==1004){
-          this.$message({ message: data.result.msg, type: 'warning' })
-          return false
-        }
-        _this.row=data.rows
-        _this.pagination.total = data.total
+        var _this = this
+        _this.row = res.data.rows
+        _this.row.forEach((item,index)=>{
+          if(item.resultStr=='未完成'){
+             _this.row[index].rep_num = ''
+             _this.row[index].rep_InvoiceCode = ''
+             _this.row[index].rep_InvoicePrice = ''
+             _this.row[index].rep_InvoiceRemark = ''
+          }
+        })
 
+        _this.pagination.total = res.data.total
       })
       .catch(err=>{
-        console.log(err)
+        this.$message({ message: '请求表格数据出错，请重试！', type: 'warning' });
       })
      },
      //显示表格头部列
@@ -287,31 +312,55 @@ export default {
        this.pagination.currentPage = value
        this.getform()
      },
-     selectRowChange(row,col,event){
+      selectRowChange(row,col,event){
           row.flag = !row.flag;
           this.$refs.multipleTable.toggleRowSelection(row,row.flag);
-     },
-     //导出按钮
-     exportData(){
-       window.location.href= this.$path.GetReportDetail+'?type=25&posttype=2&OutField='+JSON.stringify(this.OutField)+'&searchField='+JSON.stringify(this.listQuery);
-        return false;
-     },
+      },
       searchFrom(){
         this.pagination.currentPage = 1
         this.getform()
         return false
       },
+      //查看详情
+      view(row){
+        var _this = this
+        var arr  = [];
+        arr.push(row);
+        if(row){
+          var row = arr
+        }else{
+          var row = this.$refs.multipleTable.selection  //获取选中行数据
+        }
+        if(row.length!=1){
+          this.$message({ message: '请选择一条数据查看详情！', type: 'warning' });
+          return false
+        }
+        this.dialogVisible = true
+        this.req_code = row[0].req_code
+      },
+      //导出按钮
+      exportData(){
+        window.location.href= this.$path.getform1+'?IsDel=1&posttype=2&OutField='+JSON.stringify(this.OutField)+'&searchField='+JSON.stringify(this.listQuery);
+        return false;
+      },
+      //表格行控制
+      tableRowClassName({row, rowIndex}){
+        if(row.req_submit_flag != 0){
+          return 'warning-row';
+        }else{
+
+        }
+        return '';
+      },
    },
    components:{
+     ViewApply
    }
 }
 </script>
 <style lang="scss">
   .search-box .el-select,.search-box .el-form-item__content{
     width: 350px;
-  }
-  .wForm .el-form-item__content{
-    width: auto;
   }
   .float_right{
     float: right;
@@ -321,12 +370,16 @@ export default {
       width: auto;
     }
   }
-  .viewUp .file-caption-main{
-    display: none;
-  }
-  .btnList{
-    .el-card__body{
-      background: #fff;
+  .logistics{
+    .file-input{
+      display: none;
     }
   }
+  .el-table .warning-row {
+    //  background: #dfdfdf;
+    .cell{
+      color: rgb(202, 202, 202);
+    }
+  }
+
 </style>
